@@ -10,7 +10,7 @@ body {
   flex-direction: column;
   gap: 10px;
   max-width: 300px;
-  margin: 100px auto;
+  margin: 120px auto;
 }
 
 input, textarea, button {
@@ -19,22 +19,42 @@ input, textarea, button {
   border: none;
 }
 
+textarea {
+  min-height: 80px;
+}
+
 button {
-  background: #1e88e5;
+  background: #3a3a3a;
   color: #fff;
 }
 
-header {
+.topnav {
+  position: sticky;
+  top: 0;
+  background: #2a2a2a;
   display: flex;
   justify-content: space-between;
-  padding: 15px;
-  background: #1c1c1c;
+  align-items: center;
+  padding: 10px 15px;
+  z-index: 10;
+}
+
+.topnav nav {
+  display: flex;
+  gap: 10px;
+}
+
+.title {
+  font-size: 18px;
 }
 
 main {
   padding: 15px;
+}
+
+#eventList {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 15px;
 }
 
@@ -55,8 +75,20 @@ main {
   display: none;
 }
 
+ul {
+  padding-left: 0;
+}
+
+li {
+  list-style: none;
+  padding: 8px;
+  background: #1e1e1e;
+  margin-bottom: 6px;
+  border-radius: 6px;
+}
+
 @media (max-width: 600px) {
-  main {
-    grid-template-columns: 1fr;
+  .topnav nav {
+    flex-wrap: wrap;
   }
 }
