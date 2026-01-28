@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Event Übersicht</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+<div id="loginPage" class="center">
+  <h2>Login</h2>
+  <input type="email" id="email" placeholder="E-Mail">
+  <input type="password" id="password" placeholder="Passwort">
+  <button onclick="login()">Anmelden</button>
+</div>
+
+<div id="app" class="hidden">
+  <header>
+    <h1>Events</h1>
+    <button onclick="openNav()">☰</button>
+  </header>
+
+  <main id="eventList"></main>
+
+  <div id="nav" class="popup hidden">
+    <button onclick="showHome()">Startseite</button>
+    <button onclick="openEventPopup()">Neues Event</button>
+    <button onclick="showInventory()">Inventar</button>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <div id="eventPopup" class="popup hidden">
+    <h2>Neues Event</h2>
+    <input type="date" id="eventDate">
+    <input type="text" id="eventName" placeholder="Event Name">
+    <input type="text" id="eventLead" placeholder="Leitung">
+    <textarea id="eventText" placeholder="Beschreibung"></textarea>
+    <button onclick="saveEvent()">Speichern</button>
+    <button onclick="closePopups()">Abbrechen</button>
+  </div>
+
+  <div id="inventoryPage" class="hidden">
+    <h2>Inventar</h2>
+    <button onclick="openItemPopup()">Gerät hinzufügen</button>
+    <ul id="inventoryList"></ul>
+  </div>
+
+  <div id="itemPopup" class="popup hidden">
+    <h2>Gerät hinzufügen</h2>
+    <input type="text" id="itemName" placeholder="Name">
+    <input type="number" id="itemAmount" placeholder="Menge">
+    <button onclick="saveItem()">Speichern</button>
+    <button onclick="closePopups()">Abbrechen</button>
+  </div>
+</div>
+
+<script type="module" src="app.js"></script>
+</body>
+</html>
