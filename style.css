@@ -2,15 +2,15 @@ body {
   margin: 0;
   font-family: Arial, sans-serif;
   background: #121212;
-  color: #fff;
+  color: #ffffff;
 }
 
 .center {
+  max-width: 320px;
+  margin: 120px auto;
   display: flex;
   flex-direction: column;
   gap: 10px;
-  max-width: 300px;
-  margin: 120px auto;
 }
 
 input, textarea, button {
@@ -19,24 +19,23 @@ input, textarea, button {
   border: none;
 }
 
-textarea {
-  min-height: 80px;
-}
-
 button {
   background: #3a3a3a;
-  color: #fff;
+  color: #ffffff;
 }
 
 .topnav {
-  position: sticky;
+  position: fixed;
   top: 0;
-  background: #2a2a2a;
+  left: 0;
+  height: 56px;
+  width: 100%;
+  background: #2f2f2f;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 10px 15px;
-  z-index: 10;
+  padding: 0 15px;
+  z-index: 1000;
 }
 
 .topnav nav {
@@ -49,7 +48,7 @@ button {
 }
 
 main {
-  padding: 15px;
+  padding: 80px 15px 15px;
 }
 
 #eventList {
@@ -71,20 +70,20 @@ main {
   padding: 20px;
 }
 
-.hidden {
-  display: none;
-}
-
 ul {
   padding-left: 0;
 }
 
 li {
   list-style: none;
-  padding: 8px;
   background: #1e1e1e;
+  padding: 8px;
   margin-bottom: 6px;
   border-radius: 6px;
+}
+
+.hidden {
+  display: none;
 }
 
 @media (max-width: 600px) {
