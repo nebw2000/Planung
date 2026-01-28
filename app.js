@@ -11,44 +11,56 @@ const firebaseConfig = {
   appId: "1:904150697732:web:1a76107dd4c96d5317f251"
 };
 
-const appFirebase = initializeApp(firebaseConfig);
-const auth = getAuth(appFirebase);
-const db = getDatabase(appFirebase);
+const firebaseApp = initializeApp(firebaseConfig);
+const auth = getAuth(firebaseApp);
+const db = getDatabase(firebaseApp);
 
+/* DOM */
+const loginPage = document.getElementById("loginPage");
+const appPage = document.getElementById("app");
+const homePage = document.getElementById("homePage");
+const inventoryPage = document.getElementById("inventoryPage");
+const eventList = document.getElementById("eventList");
+const inventoryList = document.getElementById("inventoryList");
+
+/* NAV */
+document.getElementById("navHome").onclick = showHome;
+document.getElementById("navNew").onclick = openEventPopup;
+document.getElementById("navInv").onclick = showInventory;
+document.getElementById("navLogout").onclick = () => signOut(auth);
+
+/* LOGIN */
 window.login = () => {
   signInWithEmailAndPassword(auth, email.value, password.value);
 };
 
-window.logout = () => signOut(auth);
-
 onAuthStateChanged(auth, user => {
   if (user) {
     loginPage.classList.add("hidden");
-    app.classList.remove("hidden");
+    appPage.classList.remove("hidden");
+    showHome();
     loadEvents();
     loadInventory();
   } else {
+    appPage.classList.add("hidden");
     loginPage.classList.remove("hidden");
-    app.classList.add("hidden");
   }
 });
 
-window.showHome = () => {
+/* SEITEN */
+function showHome() {
   homePage.classList.remove("hidden");
   inventoryPage.classList.add("hidden");
-};
+}
 
-window.showInventory = () => {
+function showInventory() {
   homePage.classList.add("hidden");
   inventoryPage.classList.remove("hidden");
-};
+}
 
+/* EVENTS */
 window.openEventPopup = () => {
   eventPopup.classList.remove("hidden");
-};
-
-window.openItemPopup = () => {
-  itemPopup.classList.remove("hidden");
 };
 
 window.closePopups = () => {
@@ -84,6 +96,11 @@ function loadEvents() {
     });
   });
 }
+
+/* INVENTAR */
+window.openItemPopup = () => {
+  itemPopup.classList.remove("hidden");
+};
 
 window.saveItem = () => {
   push(ref(db, "inventory"), {
