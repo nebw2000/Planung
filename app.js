@@ -11,16 +11,12 @@ const firebaseConfig = {
   appId: "1:904150697732:web:1a76107dd4c96d5317f251"
 };
 
-const app = initializeApp(firebaseConfig);
-const auth = getAuth(app);
-const db = getDatabase(app);
+const appFirebase = initializeApp(firebaseConfig);
+const auth = getAuth(appFirebase);
+const db = getDatabase(appFirebase);
 
 window.login = () => {
-  signInWithEmailAndPassword(
-    auth,
-    email.value,
-    password.value
-  );
+  signInWithEmailAndPassword(auth, email.value, password.value);
 };
 
 window.logout = () => signOut(auth);
@@ -37,6 +33,29 @@ onAuthStateChanged(auth, user => {
   }
 });
 
+window.showHome = () => {
+  homePage.classList.remove("hidden");
+  inventoryPage.classList.add("hidden");
+};
+
+window.showInventory = () => {
+  homePage.classList.add("hidden");
+  inventoryPage.classList.remove("hidden");
+};
+
+window.openEventPopup = () => {
+  eventPopup.classList.remove("hidden");
+};
+
+window.openItemPopup = () => {
+  itemPopup.classList.remove("hidden");
+};
+
+window.closePopups = () => {
+  eventPopup.classList.add("hidden");
+  itemPopup.classList.add("hidden");
+};
+
 window.saveEvent = () => {
   push(ref(db, "events"), {
     date: eventDate.value,
@@ -51,7 +70,7 @@ function loadEvents() {
   onValue(ref(db, "events"), snap => {
     eventList.innerHTML = "";
     const data = Object.values(snap.val() || {});
-    data.sort((a,b) => a.date.localeCompare(b.date));
+    data.sort((a, b) => a.date.localeCompare(b.date));
     data.forEach(e => {
       const div = document.createElement("div");
       div.className = "card";
@@ -84,25 +103,3 @@ function loadInventory() {
     });
   });
 }
-
-window.openNav = () => nav.classList.remove("hidden");
-window.openEventPopup = () => eventPopup.classList.remove("hidden");
-window.openItemPopup = () => itemPopup.classList.remove("hidden");
-
-window.showHome = () => {
-  inventoryPage.classList.add("hidden");
-  eventList.classList.remove("hidden");
-  closePopups();
-};
-
-window.showInventory = () => {
-  eventList.classList.add("hidden");
-  inventoryPage.classList.remove("hidden");
-  closePopups();
-};
-
-window.closePopups = () => {
-  nav.classList.add("hidden");
-  eventPopup.classList.add("hidden");
-  itemPopup.classList.add("hidden");
-};
