@@ -16,19 +16,28 @@
 </div>
 
 <div id="app" class="hidden">
-  <header>
-    <h1>Events</h1>
-    <button onclick="openNav()">☰</button>
+
+  <header class="topnav">
+    <div class="title">Event Übersicht</div>
+    <nav>
+      <button onclick="showHome()">Startseite</button>
+      <button onclick="openEventPopup()">Neues Event</button>
+      <button onclick="showInventory()">Inventar</button>
+      <button onclick="logout()">Logout</button>
+    </nav>
   </header>
 
-  <main id="eventList"></main>
+  <main>
+    <section id="homePage">
+      <div id="eventList"></div>
+    </section>
 
-  <div id="nav" class="popup hidden">
-    <button onclick="showHome()">Startseite</button>
-    <button onclick="openEventPopup()">Neues Event</button>
-    <button onclick="showInventory()">Inventar</button>
-    <button onclick="logout()">Logout</button>
-  </div>
+    <section id="inventoryPage" class="hidden">
+      <h2>Inventar</h2>
+      <button onclick="openItemPopup()">Gerät hinzufügen</button>
+      <ul id="inventoryList"></ul>
+    </section>
+  </main>
 
   <div id="eventPopup" class="popup hidden">
     <h2>Neues Event</h2>
@@ -40,12 +49,6 @@
     <button onclick="closePopups()">Abbrechen</button>
   </div>
 
-  <div id="inventoryPage" class="hidden">
-    <h2>Inventar</h2>
-    <button onclick="openItemPopup()">Gerät hinzufügen</button>
-    <ul id="inventoryList"></ul>
-  </div>
-
   <div id="itemPopup" class="popup hidden">
     <h2>Gerät hinzufügen</h2>
     <input type="text" id="itemName" placeholder="Name">
@@ -53,6 +56,7 @@
     <button onclick="saveItem()">Speichern</button>
     <button onclick="closePopups()">Abbrechen</button>
   </div>
+
 </div>
 
 <script type="module" src="app.js"></script>
