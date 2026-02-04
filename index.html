@@ -3,97 +3,98 @@
 <head>
   <meta charset="UTF-8">
   <title>GyRa Technik</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="loginPage" class="login-container">
+<!-- LOGIN -->
+<div id="loginPage" class="center">
   <div class="login-box">
-    <h1>GyRa Technik</h1>
-    <input id="email" type="email" placeholder="E-Mail">
-    <input id="password" type="password" placeholder="Passwort">
-    <button class="btn blue" onclick="login()">Login</button>
+    <h2>GyRa Technik</h2>
+    <input id="loginEmail" placeholder="E-Mail">
+    <input id="loginPassword" type="password" placeholder="Passwort">
+    <button onclick="login()">Login</button>
   </div>
 </div>
 
+<!-- APP -->
 <div id="app" class="hidden">
 
   <header class="navbar">
     <div class="logo">GyRa Technik</div>
     <nav>
-      <button class="btn blue" onclick="showPage('events')">Events</button>
-      <button class="btn blue" onclick="showPage('create')">Event erstellen</button>
-      <button class="btn blue" onclick="showPage('inventory')">Inventar</button>
-      <button class="btn blue" onclick="showPage('about')">Über uns</button>
-      <button class="btn red" onclick="logout()">Logout</button>
+      <button onclick="showPage('events')">Events</button>
+      <button onclick="showPage('create')">Event erstellen</button>
+      <button onclick="showPage('inventory')">Inventar</button>
+      <button onclick="showPage('about')">Über uns</button>
+      <button onclick="logout()">Logout</button>
     </nav>
   </header>
 
-  <main>
+  <!-- EVENTS -->
+  <section id="events" class="page">
+    <div id="eventList" class="grid"></div>
+  </section>
 
-    <section id="events" class="page">
-      <div id="eventList" class="event-grid"></div>
-    </section>
+  <!-- EVENT ERSTELLEN -->
+  <section id="create" class="page hidden center">
+    <div class="form">
+      <input id="eventName" placeholder="Event Name">
+      <input id="eventLead" placeholder="Leitung">
+      <input id="eventDate" type="date">
+      <input id="rehearsalTime" type="time">
+      <input id="eventTime" type="time">
+      <select id="eventPlace">
+        <option>Atrium</option>
+        <option>Forum</option>
+      </select>
+      <textarea id="eventText" placeholder="Text Feld für alle Infos" minlength="5" maxlength="900"></textarea>
+      <button class="green" onclick="saveEvent()">Speichern</button>
+    </div>
+  </section>
 
-    <section id="create" class="page hidden center">
-      <div class="form-box">
-        <input id="eName" placeholder="Event Name">
-        <input id="eLead" placeholder="Leitung">
-        <input id="eDate" type="date">
-        <input id="eRehearsal" type="time">
-        <input id="eTime" type="time">
-        <select id="ePlace">
-          <option>Atrium</option>
-          <option>Forum</option>
-        </select>
-        <label>Text Feld für alle Infos</label>
-        <textarea id="eText" minlength="5" maxlength="900"></textarea>
-        <button class="btn green" onclick="saveEvent()">Speichern</button>
-      </div>
-    </section>
+  <!-- INVENTAR -->
+  <section id="inventory" class="page hidden">
+    <div class="center">
+      <button class="yellow" onclick="openAddItem()">Gerät hinzufügen</button>
+    </div>
 
-    <section id="inventory" class="page hidden">
-      <div class="center">
-        <button class="btn yellow" onclick="openItemPopup()">Sache hinzufügen</button>
-      </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Menge</th>
+          <th>Status</th>
+          <th>Aktion</th>
+        </tr>
+      </thead>
+      <tbody id="inventoryList"></tbody>
+    </table>
+  </section>
 
-      <table>
-        <thead>
-          <tr>
-            <th>Name</th>
-            <th>Menge</th>
-            <th>Status</th>
-            <th>Aktion</th>
-          </tr>
-        </thead>
-        <tbody id="inventoryList"></tbody>
-      </table>
-    </section>
+  <!-- ÜBER UNS -->
+  <section id="about" class="page hidden center">
+    <h1>GyRa Technik</h1>
+  </section>
 
-    <section id="about" class="page hidden center big-text">
-      GyRa Technik
-    </section>
-
-  </main>
 </div>
 
-<!-- Neues Item -->
+<!-- POPUPS -->
 <div id="itemPopup" class="popup hidden">
   <div class="popup-box">
-    <input id="iName" placeholder="Name">
-    <input id="iAmount" type="number" placeholder="Menge">
-    <select id="iStatus">
+    <input id="itemName" placeholder="Name">
+    <input id="itemAmount" type="number" placeholder="Menge">
+    <select id="itemStatus">
       <option>OK</option>
       <option>Defekt</option>
       <option>Leer</option>
     </select>
-    <button class="btn green" onclick="saveItem()">Speichern</button>
-    <button class="btn red" onclick="closePopup()">Abbrechen</button>
+    <button class="green" onclick="saveItem()">Speichern</button>
+    <button class="red" onclick="closePopups()">Abbrechen</button>
   </div>
 </div>
 
-<!-- Bearbeiten -->
 <div id="editItemPopup" class="popup hidden">
   <div class="popup-box">
     <input id="editName">
@@ -103,11 +104,16 @@
       <option>Defekt</option>
       <option>Leer</option>
     </select>
-    <button class="btn green" onclick="updateItem()">Speichern</button>
-    <button class="btn red" onclick="closeEditPopup()">Abbrechen</button>
+    <button class="green" onclick="updateItem()">Speichern</button>
+    <button class="red" onclick="closePopups()">Abbrechen</button>
   </div>
 </div>
 
-<script type="module" src="app.js"></script>
+<script type="module" src="firebase.js"></script>
+<script type="module" src="auth.js"></script>
+<script type="module" src="nav.js"></script>
+<script type="module" src="events.js"></script>
+<script type="module" src="inventory.js"></script>
+
 </body>
 </html>
