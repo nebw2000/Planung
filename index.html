@@ -4,190 +4,8 @@
 <meta charset="UTF-8">
 <title>GyRa Technik</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-
-<style>
-:root {
-  --radius: 14px;
-}
-
-* {
-  box-sizing: border-box;
-}
-
-body {
-  margin: 0;
-  font-family: system-ui, sans-serif;
-  background: #121212;
-  color: #fff;
-}
-
-.hidden { display: none; }
-
-input, select, textarea, button {
-  width: 100%;
-  padding: 12px;
-  margin: 8px 0;
-  border-radius: var(--radius);
-  border: none;
-  font-size: 16px;
-}
-
-textarea {
-  resize: vertical;
-  min-height: 120px;
-}
-
-button {
-  cursor: pointer;
-}
-
-.green { background: #2e7d32; color: #fff; }
-.red { background: #c62828; color: #fff; }
-.blue { background: #1976d2; color: #fff; }
-.yellow { background: #fbc02d; color: #000; }
-
-.center {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
-
-.login-box {
-  background: #1e1e1e;
-  padding: 28px;
-  border-radius: var(--radius);
-  width: 90%;
-  max-width: 340px;
-  animation: fade 0.5s ease;
-}
-
-@keyframes fade {
-  from { opacity: 0; transform: translateY(15px); }
-  to { opacity: 1; }
-}
-
-/* NAVBAR */
-.navbar {
-  background: #ffffff;
-  color: #000;
-  padding: 10px;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
-  align-items: center;
-  border-radius: 0 0 var(--radius) var(--radius);
-}
-
-.navbar > div {
-  font-weight: 600;
-}
-
-.navbar nav {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 6px;
-  width: 100%;
-}
-
-.navbar button {
-  background: #1976d2;
-  color: #fff;
-  flex: 1;
-  border-radius: var(--radius);
-}
-
-/* PAGES */
-.page {
-  padding: 16px;
-}
-
-/* EVENTS GRID */
-.grid {
-  display: grid;
-  grid-template-columns: 1fr;
-  gap: 16px;
-}
-
-@media (min-width: 600px) {
-  .grid {
-    grid-template-columns: repeat(2, 1fr);
-  }
-}
-
-@media (min-width: 900px) {
-  .grid {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-.card {
-  background: #ffffff;
-  color: #000;
-  padding: 16px;
-  border-radius: var(--radius);
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-/* FORM */
-.form {
-  background: #1e1e1e;
-  padding: 20px;
-  border-radius: var(--radius);
-  width: 100%;
-  max-width: 420px;
-}
-
-/* TABLE */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 16px;
-  border-radius: var(--radius);
-  overflow: hidden;
-}
-
-th, td {
-  padding: 12px;
-  text-align: left;
-}
-
-thead {
-  background: #1e1e1e;
-}
-
-tbody tr {
-  border-bottom: 1px solid #333;
-}
-
-/* POPUPS */
-.popup {
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,0.75);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  padding: 16px;
-}
-
-.popup-box {
-  background: #1e1e1e;
-  padding: 20px;
-  border-radius: var(--radius);
-  width: 100%;
-  max-width: 320px;
-}
-
-/* ABOUT */
-#about h1 {
-  font-size: 40px;
-  text-align: center;
-}
-</style>
+<link rel="stylesheet" href="style.css">
 </head>
-
 <body>
 
 <!-- LOGIN -->
@@ -219,7 +37,7 @@ tbody tr {
     <div id="eventList" class="grid"></div>
   </section>
 
-  <!-- EVENT ERSTELLEN -->
+  <!-- CREATE EVENT -->
   <section id="create" class="page hidden center">
     <div class="form">
       <input id="eventName" placeholder="Event Name">
@@ -241,7 +59,6 @@ tbody tr {
     <div class="center">
       <button class="yellow" onclick="openAddItem()">Gerät hinzufügen</button>
     </div>
-
     <table>
       <thead>
         <tr>
@@ -261,7 +78,7 @@ tbody tr {
   </section>
 </div>
 
-<!-- INVENTAR POPUPS -->
+<!-- POPUPS -->
 <div id="itemPopup" class="popup hidden">
   <div class="popup-box">
     <input id="itemName" placeholder="Name">
@@ -291,122 +108,68 @@ tbody tr {
 </div>
 
 <script type="module">
-import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
-import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut }
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { getDatabase, ref, push, onValue, remove, update }
-from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { auth, db } from './firebase.js';
+import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
 
-const firebaseConfig = {
-  apiKey: "AIzaSyA1BZjAao1PFkl32vsEV2si_g4faZRr5T4",
-  authDomain: "planung28-1-26.firebaseapp.com",
-  projectId: "planung28-1-26",
-  storageBucket: "planung28-1-26.firebasestorage.app",
-  messagingSenderId: "904150697732",
-  appId: "1:904150697732:web:1a76107dd4c96d5317f251"
-};
-
-const appFB = initializeApp(firebaseConfig);
-const auth = getAuth(appFB);
-const db = getDatabase(appFB);
-
-window.login = () =>
-  signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
-
+// AUTH
+window.login = () => signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
 window.logout = () => signOut(auth);
-
 onAuthStateChanged(auth, user => {
-  loginPage.classList.toggle("hidden", !!user);
-  app.classList.toggle("hidden", !user);
+  loginPage.classList.toggle('hidden', !!user);
+  app.classList.toggle('hidden', !user);
 });
 
+// NAVIGATION
 window.showPage = id => {
-  document.querySelectorAll(".page").forEach(p => p.classList.add("hidden"));
-  document.getElementById(id).classList.remove("hidden");
+  document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
+  document.getElementById(id).classList.remove('hidden');
 };
 
-const eventsRef = ref(db, "events");
-
-window.saveEvent = () => {
-  push(eventsRef, {
-    name: eventName.value,
-    lead: eventLead.value,
-    date: eventDate.value,
-    rehearsalTime: rehearsalTime.value,
-    eventTime: eventTime.value,
-    place: eventPlace.value,
-    text: eventText.value
-  });
-};
-
-onValue(eventsRef, snap => {
-  eventList.innerHTML = "";
-  Object.entries(snap.val() || {})
-    .sort((a,b) => a[1].date.localeCompare(b[1].date))
-    .forEach(([id,e]) => {
-      eventList.innerHTML += `
-        <div class="card">
-          <h3>${e.name}</h3>
-          <p>${e.date}</p>
-          <p>${e.lead}</p>
-          <button class="red" onclick="deleteEvent('${id}')">Löschen</button>
-        </div>`;
-    });
+// EVENTS
+const eventsRef = ref(db,'events');
+window.saveEvent = () => push(eventsRef,{
+  name:eventName.value,
+  lead:eventLead.value,
+  date:eventDate.value,
+  rehearsalTime:rehearsalTime.value,
+  eventTime:eventTime.value,
+  place:eventPlace.value,
+  text:eventText.value
 });
-
-window.deleteEvent = id => remove(ref(db,"events/"+id));
-
-const invRef = ref(db,"inventory");
-let editId = null;
-
-window.openAddItem = () => itemPopup.classList.remove("hidden");
-window.closePopups = () => {
-  itemPopup.classList.add("hidden");
-  editItemPopup.classList.add("hidden");
-};
-
-window.saveItem = () => {
-  push(invRef,{
-    name: itemName.value,
-    amount: itemAmount.value,
-    status: itemStatus.value
-  });
-  closePopups();
-};
-
-onValue(invRef, snap => {
-  inventoryList.innerHTML = "";
-  Object.entries(snap.val() || {}).forEach(([id,i]) => {
-    inventoryList.innerHTML += `
-      <tr>
-        <td>${i.name}</td>
-        <td>${i.amount}</td>
-        <td>${i.status}</td>
-        <td>
-          <button class="blue" onclick="editItem('${id}','${i.name}','${i.amount}','${i.status}')">
-            Bearbeiten
-          </button>
-        </td>
-      </tr>`;
+onValue(eventsRef,snap=>{
+  eventList.innerHTML='';
+  Object.entries(snap.val()||{}).sort((a,b)=>a[1].date.localeCompare(b[1].date))
+  .forEach(([id,e])=>{
+    eventList.innerHTML+=`<div class="card">
+      <h3>${e.name}</h3>
+      <p>${e.date}</p>
+      <p>${e.lead}</p>
+      <button class="red" onclick="deleteEvent('${id}')">Löschen</button>
+    </div>`;
   });
 });
+window.deleteEvent = id => remove(ref(db,'events/'+id));
 
-window.editItem = (id,n,a,s) => {
-  editId = id;
-  editName.value = n;
-  editAmount.value = a;
-  editStatus.value = s;
-  editItemPopup.classList.remove("hidden");
-};
-
-window.updateItem = () => {
-  update(ref(db,"inventory/"+editId),{
-    name: editName.value,
-    amount: editAmount.value,
-    status: editStatus.value
+// INVENTAR
+const invRef = ref(db,'inventory');
+let editId=null;
+window.openAddItem = () => itemPopup.classList.remove('hidden');
+window.closePopups = () => {itemPopup.classList.add('hidden'); editItemPopup.classList.add('hidden');};
+window.saveItem = () => {push(invRef,{name:itemName.value,amount:itemAmount.value,status:itemStatus.value}); closePopups();}
+onValue(invRef,snap=>{
+  inventoryList.innerHTML='';
+  Object.entries(snap.val()||{}).forEach(([id,i])=>{
+    inventoryList.innerHTML+=`<tr>
+      <td>${i.name}</td>
+      <td>${i.amount}</td>
+      <td>${i.status}</td>
+      <td><button class="blue" onclick="editItem('${id}','${i.name}','${i.amount}','${i.status}')">Bearbeiten</button></td>
+    </tr>`;
   });
-  closePopups();
-};
+});
+window.editItem=(id,n,a,s)=>{editId=id; editName.value=n; editAmount.value=a; editStatus.value=s; editItemPopup.classList.remove('hidden');};
+window.updateItem=()=>{update(ref(db,'inventory/'+editId),{name:editName.value,amount:editAmount.value,status:editStatus.value}); closePopups();}
 </script>
 
 </body>
