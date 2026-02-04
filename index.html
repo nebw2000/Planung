@@ -4,13 +4,78 @@
 <meta charset="UTF-8">
 <title>GyRa Technik</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<link rel="stylesheet" href="style.css">
+<style>
+:root {
+  --primary: #1976d2;
+  --green: #2e7d32;
+  --red: #c62828;
+  --yellow: #fbc02d;
+  --dark-bg: #121212;
+  --card-bg: #1e1e1e;
+  --radius: 12px;
+  --transition: 0.3s ease;
+}
+
+* { box-sizing: border-box; margin:0; padding:0; }
+body { font-family: system-ui, sans-serif; background: var(--dark-bg); color:#fff; }
+.hidden { display:none; }
+input, select, textarea, button { width:100%; padding:12px; margin:6px 0; border-radius:var(--radius); border:none; font-size:16px; transition: var(--transition); }
+textarea { resize: vertical; min-height:120px; }
+button { cursor:pointer; transition: var(--transition);}
+button:hover { opacity:0.85; }
+
+.green{background:var(--green);color:#fff;}
+.red{background:var(--red);color:#fff;}
+.blue{background:var(--primary);color:#fff;}
+.yellow{background:var(--yellow);color:#000;}
+
+.center{display:flex;justify-content:center;align-items:center;}
+.login-container{
+  background: var(--card-bg); padding:30px; border-radius: var(--radius); width: 90%; max-width: 350px; animation:fadeScale 0.5s;
+}
+@keyframes fadeScale{from{opacity:0; transform:scale(0.95);} to{opacity:1; transform:scale(1);}}
+
+.navbar{
+  background:#fff; color:#000; padding:10px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:6px; border-radius:0 0 var(--radius) var(--radius);
+}
+.navbar nav{ display:flex; flex-wrap:wrap; gap:6px; }
+.navbar button{ flex:1; border-radius: var(--radius); background:var(--primary); color:#fff; transition: var(--transition);}
+.navbar button:hover{opacity:0.85;}
+
+.page{padding:16px; opacity:1; transition: opacity 0.4s ease;}
+
+.grid{ display:grid; grid-template-columns:1fr; gap:16px;}
+@media(min-width:600px){.grid{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr);}}
+
+.card{
+  background:#fff; color:#000; padding:16px; border-radius: var(--radius); display:flex; flex-direction:column; gap:6px;
+  opacity:0; transform:translateY(20px); animation:cardFade 0.5s forwards;
+}
+@keyframes cardFade{to{opacity:1; transform:translateY(0);}}
+
+.form{background: var(--card-bg); padding:20px; border-radius: var(--radius); width:100%; max-width:420px; animation:fadeScale 0.4s;}
+
+table{width:100%; border-collapse:collapse; margin-top:16px; border-radius:var(--radius); overflow:hidden;}
+th,td{padding:12px; text-align:left;}
+thead{background: var(--card-bg);}
+tbody tr{border-bottom:1px solid #333;}
+tbody tr:hover{background:#2a2a2a;}
+
+.popup{
+  position:fixed; inset:0; background:rgba(0,0,0,0.75); display:flex; justify-content:center; align-items:center; padding:16px; opacity:0; transform:scale(0.95); transition:0.25s ease;
+}
+.popup.show{opacity:1; transform:scale(1);}
+.popup-box{background: var(--card-bg); padding:20px; width:100%; max-width:320px; border-radius: var(--radius); animation:fadeScale 0.3s;}
+
+#about h1{font-size:40px;text-align:center; animation:fadeScale 0.5s;}
+</style>
 </head>
 <body>
 
 <!-- LOGIN -->
 <div id="loginPage" class="center" style="height:100vh;">
-  <div class="login-box">
+  <div class="login-container">
     <h2>GyRa Technik</h2>
     <input id="loginEmail" placeholder="E-Mail">
     <input id="loginPassword" type="password" placeholder="Passwort">
@@ -20,7 +85,6 @@
 
 <!-- APP -->
 <div id="app" class="hidden">
-
   <header class="navbar">
     <div>GyRa Technik</div>
     <nav>
@@ -108,27 +172,43 @@
 </div>
 
 <script type="module">
-import { auth, db } from './firebase.js';
-import { signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
-import { ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js";
+import { getAuth, signInWithEmailAndPassword, onAuthStateChanged, signOut } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js";
+import { getDatabase, ref, push, onValue, remove, update } from "https://www.gstatic.com/firebasejs/10.7.1/firebase-database.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyA1BZjAao1PFkl32vsEV2si_g4faZRr5T4",
+  authDomain: "planung28-1-26.firebaseapp.com",
+  projectId: "planung28-1-26",
+  storageBucket: "planung28-1-26.firebasestorage.app",
+  messagingSenderId: "904150697732",
+  appId: "1:904150697732:web:1a76107dd4c96d5317f251"
+};
+
+const appFB = initializeApp(firebaseConfig);
+const auth = getAuth(appFB);
+const db = getDatabase(appFB);
 
 // AUTH
-window.login = () => signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
-window.logout = () => signOut(auth);
-onAuthStateChanged(auth, user => {
-  loginPage.classList.toggle('hidden', !!user);
-  app.classList.toggle('hidden', !user);
+window.login = ()=> signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
+window.logout = ()=> signOut(auth);
+onAuthStateChanged(auth, user=>{
+  loginPage.classList.toggle("hidden", !!user);
+  app.classList.toggle("hidden", !user);
 });
 
 // NAVIGATION
-window.showPage = id => {
+window.showPage = id=>{
   document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
-  document.getElementById(id).classList.remove('hidden');
+  const page = document.getElementById(id);
+  page.classList.remove('hidden');
+  page.style.opacity=0;
+  setTimeout(()=>{page.style.opacity=1;},10);
 };
 
 // EVENTS
 const eventsRef = ref(db,'events');
-window.saveEvent = () => push(eventsRef,{
+window.saveEvent = ()=>push(eventsRef,{
   name:eventName.value,
   lead:eventLead.value,
   date:eventDate.value,
@@ -137,40 +217,36 @@ window.saveEvent = () => push(eventsRef,{
   place:eventPlace.value,
   text:eventText.value
 });
-onValue(eventsRef,snap=>{
+onValue(eventsRef, snap=>{
   eventList.innerHTML='';
   Object.entries(snap.val()||{}).sort((a,b)=>a[1].date.localeCompare(b[1].date))
-  .forEach(([id,e])=>{
-    eventList.innerHTML+=`<div class="card">
-      <h3>${e.name}</h3>
-      <p>${e.date}</p>
-      <p>${e.lead}</p>
-      <button class="red" onclick="deleteEvent('${id}')">Löschen</button>
-    </div>`;
-  });
+    .forEach(([id,e])=>{
+      const card = document.createElement('div');
+      card.className='card';
+      card.innerHTML=`<h3>${e.name}</h3><p>${e.date}</p><p>${e.lead}</p>
+      <button class="red" onclick="deleteEvent('${id}')">Löschen</button>`;
+      eventList.appendChild(card);
+    });
 });
-window.deleteEvent = id => remove(ref(db,'events/'+id));
+window.deleteEvent=id=>remove(ref(db,'events/'+id));
 
 // INVENTAR
 const invRef = ref(db,'inventory');
 let editId=null;
-window.openAddItem = () => itemPopup.classList.remove('hidden');
-window.closePopups = () => {itemPopup.classList.add('hidden'); editItemPopup.classList.add('hidden');};
-window.saveItem = () => {push(invRef,{name:itemName.value,amount:itemAmount.value,status:itemStatus.value}); closePopups();}
+window.openAddItem=()=>itemPopup.classList.add('show'); itemPopup.classList.remove('hidden');
+window.closePopups=()=>{itemPopup.classList.remove('show'); editItemPopup.classList.remove('show'); setTimeout(()=>{itemPopup.classList.add('hidden'); editItemPopup.classList.add('hidden');},250);}
+window.saveItem=()=>{push(invRef,{name:itemName.value,amount:itemAmount.value,status:itemStatus.value}); closePopups();}
 onValue(invRef,snap=>{
   inventoryList.innerHTML='';
   Object.entries(snap.val()||{}).forEach(([id,i])=>{
-    inventoryList.innerHTML+=`<tr>
-      <td>${i.name}</td>
-      <td>${i.amount}</td>
-      <td>${i.status}</td>
-      <td><button class="blue" onclick="editItem('${id}','${i.name}','${i.amount}','${i.status}')">Bearbeiten</button></td>
-    </tr>`;
+    const row=document.createElement('tr');
+    row.innerHTML=`<td>${i.name}</td><td>${i.amount}</td><td>${i.status}</td>
+    <td><button class="blue" onclick="editItem('${id}','${i.name}','${i.amount}','${i.status}')">Bearbeiten</button></td>`;
+    inventoryList.appendChild(row);
   });
 });
-window.editItem=(id,n,a,s)=>{editId=id; editName.value=n; editAmount.value=a; editStatus.value=s; editItemPopup.classList.remove('hidden');};
+window.editItem=(id,n,a,s)=>{editId=id; editName.value=n; editAmount.value=a; editStatus.value=s; editItemPopup.classList.add('show'); editItemPopup.classList.remove('hidden');}
 window.updateItem=()=>{update(ref(db,'inventory/'+editId),{name:editName.value,amount:editAmount.value,status:editStatus.value}); closePopups();}
 </script>
-
 </body>
 </html>
