@@ -1,0 +1,108 @@
+:root {
+  --radius: 12px;
+  --primary: #1976d2;
+  --green: #2e7d32;
+  --red: #c62828;
+  --yellow: #fbc02d;
+  --dark: #121212;
+  --card-bg: #1e1e1e;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: system-ui, sans-serif;
+  background: var(--dark);
+  color: #fff;
+}
+
+.hidden { display: none; }
+
+input, select, textarea, button {
+  width: 100%;
+  padding: 12px;
+  margin: 6px 0;
+  border-radius: var(--radius);
+  border: none;
+  font-size: 16px;
+}
+
+textarea { resize: vertical; min-height: 120px; }
+
+button { cursor: pointer; }
+
+.green { background: var(--green); color: #fff; }
+.red { background: var(--red); color: #fff; }
+.blue { background: var(--primary); color: #fff; }
+.yellow { background: var(--yellow); color: #000; }
+
+.center { display: flex; justify-content: center; align-items: center; }
+.login-box, .form, .popup-box, .card {
+  border-radius: var(--radius);
+}
+
+.login-box {
+  background: var(--card-bg);
+  padding: 28px;
+  width: 90%;
+  max-width: 340px;
+  animation: fade 0.5s ease;
+}
+
+@keyframes fade { from { opacity:0; transform:translateY(15px);} to{opacity:1; transform:translateY(0);} }
+
+.navbar {
+  background: #fff;
+  color: #000;
+  padding: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+  gap: 6px;
+  border-radius: 0 0 var(--radius) var(--radius);
+}
+
+.navbar nav { display: flex; flex-wrap: wrap; gap:6px; }
+.navbar button { background: var(--primary); flex: 1; }
+
+.page { padding: 16px; }
+.grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+@media(min-width:600px){.grid{grid-template-columns:repeat(2,1fr);}}
+@media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr);}}
+
+.card {
+  background: #fff;
+  color: #000;
+  padding: 16px;
+  border-radius: var(--radius);
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.form { background: var(--card-bg); padding: 20px; width: 100%; max-width: 420px; }
+
+table { width: 100%; border-collapse: collapse; margin-top:16px; border-radius:var(--radius); overflow:hidden; }
+th, td { padding: 12px; text-align: left; }
+thead { background: var(--card-bg); }
+tbody tr { border-bottom: 1px solid #333; }
+
+.popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0,0,0,0.75);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding:16px;
+}
+.popup-box { background: var(--card-bg); padding:20px; width:100%; max-width:320px; }
+
+#about h1 { font-size: 40px; text-align:center; }
+</style>
