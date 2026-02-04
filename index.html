@@ -15,7 +15,6 @@
   --radius: 16px;
   --transition: 0.3s ease;
 }
-
 * { box-sizing: border-box; margin:0; padding:0; }
 body { font-family: system-ui, sans-serif; background: var(--dark-bg); color:#fff; }
 .hidden { display:none; }
@@ -23,52 +22,37 @@ input, select, textarea, button { width:100%; padding:12px; margin:6px 0; border
 textarea { resize: vertical; min-height:120px; }
 button { cursor:pointer; transition: var(--transition);}
 button:hover { opacity:0.85; }
-
 .green{background:var(--green);color:#fff;}
 .red{background:var(--red);color:#fff;}
 .blue{background:var(--primary);color:#fff;}
 .yellow{background:var(--yellow);color:#000;}
-
 .center{display:flex;justify-content:center;align-items:center;}
 .login-container{
   background: var(--card-bg); padding:30px; border-radius: var(--radius); width: 90%; max-width: 350px; animation:fadeScale 0.5s;
 }
 @keyframes fadeScale{from{opacity:0; transform:scale(0.95);} to{opacity:1; transform:scale(1);}}
-
 .navbar{
   background:#fff; color:#000; padding:10px; display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:6px; border-radius:0 0 var(--radius) var(--radius);
 }
 .navbar nav{ display:flex; flex-wrap:wrap; gap:6px; }
 .navbar button{ flex:1; border-radius: var(--radius); background:var(--primary); color:#fff; transition: var(--transition);}
 .navbar button:hover{opacity:0.85;}
-
 .page{padding:16px; opacity:1; transition: opacity 0.4s ease;}
-
 .grid{ display:grid; grid-template-columns:1fr; gap:16px;}
 @media(min-width:600px){.grid{grid-template-columns:repeat(2,1fr);}}
 @media(min-width:900px){.grid{grid-template-columns:repeat(3,1fr);}}
-
-.card{
-  background:#fff; color:#000; padding:16px; border-radius: var(--radius); display:flex; flex-direction:column; gap:6px;
-  opacity:0; transform:translateY(20px); animation:cardFade 0.5s forwards;
-}
+.card{background:#fff; color:#000; padding:16px; border-radius: var(--radius); display:flex; flex-direction:column; gap:6px; opacity:0; transform:translateY(20px); animation:cardFade 0.5s forwards;}
 @keyframes cardFade{to{opacity:1; transform:translateY(0);}}
-
 .form{background: var(--card-bg); padding:20px; border-radius: var(--radius); width:100%; max-width:420px; animation:fadeScale 0.4s;}
-
 table{width:100%; border-collapse:collapse; margin-top:16px; border-radius:var(--radius); overflow:hidden;}
 th,td{padding:12px; text-align:left;}
 thead{background: var(--card-bg);}
 tbody tr{border-bottom:1px solid #333;}
 tbody tr:hover{background:#2a2a2a;}
 tbody button{border-radius:var(--radius);}
-
-.popup{
-  position:fixed; inset:0; background:rgba(0,0,0,0.75); display:flex; justify-content:center; align-items:center; padding:16px; opacity:0; transform:scale(0.95); transition:0.25s ease;
-}
+.popup{position:fixed; inset:0; background:rgba(0,0,0,0.75); display:flex; justify-content:center; align-items:center; padding:16px; opacity:0; transform:scale(0.95); transition:0.25s ease;}
 .popup.show{opacity:1; transform:scale(1);}
 .popup-box{background: var(--card-bg); padding:20px; width:100%; max-width:320px; border-radius: var(--radius); animation:fadeScale 0.3s;}
-
 #about h1{font-size:40px;text-align:center; animation:fadeScale 0.5s;}
 </style>
 </head>
@@ -80,7 +64,7 @@ tbody button{border-radius:var(--radius);}
     <h2>GyRa Technik</h2>
     <input id="loginEmail" placeholder="E-Mail">
     <input id="loginPassword" type="password" placeholder="Passwort">
-    <button class="blue" onclick="login()">Login</button>
+    <button class="blue" id="loginBtn">Login</button>
     <p id="loginError" style="color:#f44336; margin-top:10px;"></p>
   </div>
 </div>
@@ -192,31 +176,27 @@ const auth = getAuth(appFB);
 const db = getDatabase(appFB);
 
 // LOGIN
-window.login = () => {
-  const email = loginEmail.value;
-  const password = loginPassword.value;
+document.getElementById("loginBtn").addEventListener("click", ()=>{
+  const email = document.getElementById("loginEmail").value;
+  const password = document.getElementById("loginPassword").value;
   const errorEl = document.getElementById("loginError");
 
-  signInWithEmailAndPassword(auth, email, password)
-    .then(userCredential => {
-      errorEl.textContent = "";
-      loginPage.classList.add("hidden");
-      app.classList.remove("hidden");
-    })
-    .catch(error => {
-      console.error(error);
-      if(error.code === "auth/user-not-found") errorEl.textContent = "Benutzer nicht gefunden!";
-      else if(error.code === "auth/wrong-password") errorEl.textContent = "Falsches Passwort!";
-      else if(error.code === "auth/invalid-email") errorEl.textContent = "Ungültige E-Mail!";
-      else errorEl.textContent = "Login fehlgeschlagen: " + error.message;
+  signInWithEmailAndPassword(auth,email,password)
+    .then(()=>{ loginPage.classList.add("hidden"); app.classList.remove("hidden"); errorEl.textContent=""; })
+    .catch(err=>{
+      console.error(err);
+      if(err.code==="auth/user-not-found") errorEl.textContent="Benutzer nicht gefunden!";
+      else if(err.code==="auth/wrong-password") errorEl.textContent="Falsches Passwort!";
+      else if(err.code==="auth/invalid-email") errorEl.textContent="Ungültige E-Mail!";
+      else errorEl.textContent="Login fehlgeschlagen!";
     });
-};
+});
 
 // LOGOUT
-window.logout = () => { signOut(auth).then(()=>{ app.classList.add("hidden"); loginPage.classList.remove("hidden"); }); }
+window.logout = ()=>{ signOut(auth).then(()=>{ app.classList.add("hidden"); loginPage.classList.remove("hidden"); }); }
 
-// Prüfen, ob Nutzer schon angemeldet
-onAuthStateChanged(auth, user => {
+// Prüfen Login Status
+onAuthStateChanged(auth,user=>{
   if(user){ loginPage.classList.add("hidden"); app.classList.remove("hidden"); }
   else { loginPage.classList.remove("hidden"); app.classList.add("hidden"); }
 });
@@ -224,33 +204,33 @@ onAuthStateChanged(auth, user => {
 // NAVIGATION
 window.showPage = id=>{
   document.querySelectorAll('.page').forEach(p=>p.classList.add('hidden'));
-  const page = document.getElementById(id);
-  page.classList.remove('hidden');
-  page.style.opacity=0;
-  setTimeout(()=>{page.style.opacity=1;},10);
+  document.getElementById(id).classList.remove('hidden');
 };
 
 // EVENTS
 const eventsRef = ref(db,'events');
-window.saveEvent = ()=>push(eventsRef,{
-  name:eventName.value,
-  lead:eventLead.value,
-  date:eventDate.value,
-  rehearsalTime:rehearsalTime.value,
-  eventTime:eventTime.value,
-  place:eventPlace.value,
-  text:eventText.value
-});
-onValue(eventsRef, snap=>{
+window.saveEvent = ()=>{
+  push(eventsRef,{
+    name:eventName.value,
+    lead:eventLead.value,
+    date:eventDate.value,
+    rehearsalTime:rehearsalTime.value,
+    eventTime:eventTime.value,
+    place:eventPlace.value,
+    text:eventText.value
+  });
+};
+onValue(eventsRef,snap=>{
   eventList.innerHTML='';
   Object.entries(snap.val()||{}).sort((a,b)=>a[1].date.localeCompare(b[1].date))
-    .forEach(([id,e])=>{
-      const card = document.createElement('div');
-      card.className='card';
-      card.innerHTML=`<h3>${e.name}</h3><p>${e.date}</p><p>${e.lead}</p>
-      <button class="red" onclick="deleteEvent('${id}')">Löschen</button>`;
-      eventList.appendChild(card);
-    });
+  .forEach(([id,e],idx)=>{
+    const card=document.createElement('div');
+    card.className='card';
+    card.style.animationDelay=(idx*0.1)+'s';
+    card.innerHTML=`<h3>${e.name}</h3><p>${e.date}</p><p>${e.lead}</p>
+    <button class="red" onclick="deleteEvent('${id}')">Löschen</button>`;
+    eventList.appendChild(card);
+  });
 });
 window.deleteEvent=id=>remove(ref(db,'events/'+id));
 
@@ -262,7 +242,7 @@ window.closePopups=()=>{ itemPopup.classList.remove('show'); editItemPopup.class
 window.saveItem=()=>{ push(invRef,{name:itemName.value,amount:itemAmount.value,status:itemStatus.value}); closePopups();}
 onValue(invRef,snap=>{
   inventoryList.innerHTML='';
-  Object.entries(snap.val()||{}).forEach(([id,i])=>{
+  Object.entries(snap.val()||{}).forEach(([id,i],idx)=>{
     const row=document.createElement('tr');
     row.innerHTML=`<td>${i.name}</td><td>${i.amount}</td><td>${i.status}</td>
     <td><button class="blue" onclick="editItem('${id}','${i.name}','${i.amount}','${i.status}')">Bearbeiten</button></td>`;
