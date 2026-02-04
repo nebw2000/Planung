@@ -12,7 +12,7 @@
   --yellow: #fbc02d;
   --dark-bg: #121212;
   --card-bg: #1e1e1e;
-  --radius: 12px;
+  --radius: 16px;
   --transition: 0.3s ease;
 }
 
@@ -61,6 +61,7 @@ th,td{padding:12px; text-align:left;}
 thead{background: var(--card-bg);}
 tbody tr{border-bottom:1px solid #333;}
 tbody tr:hover{background:#2a2a2a;}
+tbody button{border-radius:var(--radius);}
 
 .popup{
   position:fixed; inset:0; background:rgba(0,0,0,0.75); display:flex; justify-content:center; align-items:center; padding:16px; opacity:0; transform:scale(0.95); transition:0.25s ease;
