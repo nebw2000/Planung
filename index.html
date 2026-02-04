@@ -80,6 +80,7 @@ tbody tr:hover{background:#2a2a2a;}
     <input id="loginEmail" placeholder="E-Mail">
     <input id="loginPassword" type="password" placeholder="Passwort">
     <button class="blue" onclick="login()">Login</button>
+    <p id="loginError" style="color:#f44336; margin-top:10px;"></p>
   </div>
 </div>
 
@@ -189,12 +190,34 @@ const appFB = initializeApp(firebaseConfig);
 const auth = getAuth(appFB);
 const db = getDatabase(appFB);
 
-// AUTH
-window.login = ()=> signInWithEmailAndPassword(auth, loginEmail.value, loginPassword.value);
-window.logout = ()=> signOut(auth);
-onAuthStateChanged(auth, user=>{
-  loginPage.classList.toggle("hidden", !!user);
-  app.classList.toggle("hidden", !user);
+// LOGIN
+window.login = () => {
+  const email = loginEmail.value;
+  const password = loginPassword.value;
+  const errorEl = document.getElementById("loginError");
+
+  signInWithEmailAndPassword(auth, email, password)
+    .then(userCredential => {
+      errorEl.textContent = "";
+      loginPage.classList.add("hidden");
+      app.classList.remove("hidden");
+    })
+    .catch(error => {
+      console.error(error);
+      if(error.code === "auth/user-not-found") errorEl.textContent = "Benutzer nicht gefunden!";
+      else if(error.code === "auth/wrong-password") errorEl.textContent = "Falsches Passwort!";
+      else if(error.code === "auth/invalid-email") errorEl.textContent = "Ungültige E-Mail!";
+      else errorEl.textContent = "Login fehlgeschlagen: " + error.message;
+    });
+};
+
+// LOGOUT
+window.logout = () => { signOut(auth).then(()=>{ app.classList.add("hidden"); loginPage.classList.remove("hidden"); }); }
+
+// Prüfen, ob Nutzer schon angemeldet
+onAuthStateChanged(auth, user => {
+  if(user){ loginPage.classList.add("hidden"); app.classList.remove("hidden"); }
+  else { loginPage.classList.remove("hidden"); app.classList.add("hidden"); }
 });
 
 // NAVIGATION
@@ -233,9 +256,9 @@ window.deleteEvent=id=>remove(ref(db,'events/'+id));
 // INVENTAR
 const invRef = ref(db,'inventory');
 let editId=null;
-window.openAddItem=()=>itemPopup.classList.add('show'); itemPopup.classList.remove('hidden');
-window.closePopups=()=>{itemPopup.classList.remove('show'); editItemPopup.classList.remove('show'); setTimeout(()=>{itemPopup.classList.add('hidden'); editItemPopup.classList.add('hidden');},250);}
-window.saveItem=()=>{push(invRef,{name:itemName.value,amount:itemAmount.value,status:itemStatus.value}); closePopups();}
+window.openAddItem=()=>{ itemPopup.classList.add('show'); itemPopup.classList.remove('hidden'); }
+window.closePopups=()=>{ itemPopup.classList.remove('show'); editItemPopup.classList.remove('show'); setTimeout(()=>{itemPopup.classList.add('hidden'); editItemPopup.classList.add('hidden');},250);}
+window.saveItem=()=>{ push(invRef,{name:itemName.value,amount:itemAmount.value,status:itemStatus.value}); closePopups();}
 onValue(invRef,snap=>{
   inventoryList.innerHTML='';
   Object.entries(snap.val()||{}).forEach(([id,i])=>{
@@ -245,8 +268,8 @@ onValue(invRef,snap=>{
     inventoryList.appendChild(row);
   });
 });
-window.editItem=(id,n,a,s)=>{editId=id; editName.value=n; editAmount.value=a; editStatus.value=s; editItemPopup.classList.add('show'); editItemPopup.classList.remove('hidden');}
-window.updateItem=()=>{update(ref(db,'inventory/'+editId),{name:editName.value,amount:editAmount.value,status:editStatus.value}); closePopups();}
+window.editItem=(id,n,a,s)=>{ editId=id; editName.value=n; editAmount.value=a; editStatus.value=s; editItemPopup.classList.add('show'); editItemPopup.classList.remove('hidden'); }
+window.updateItem=()=>{ update(ref(db,'inventory/'+editId),{name:editName.value,amount:editAmount.value,status:editStatus.value}); closePopups();}
 </script>
 </body>
 </html>
