@@ -32,19 +32,17 @@
 
   <main>
 
-    <!-- Seite 1 Events -->
     <section id="events" class="page">
       <div id="eventList" class="event-grid"></div>
     </section>
 
-    <!-- Seite 2 Event erstellen -->
     <section id="create" class="page hidden center">
       <div class="form-box">
         <input id="eName" placeholder="Event Name">
         <input id="eLead" placeholder="Leitung">
         <input id="eDate" type="date">
-        <input id="eRehearsal" type="time" placeholder="Proben Uhrzeit">
-        <input id="eTime" type="time" placeholder="Event Uhrzeit">
+        <input id="eRehearsal" type="time">
+        <input id="eTime" type="time">
         <select id="ePlace">
           <option>Atrium</option>
           <option>Forum</option>
@@ -55,7 +53,6 @@
       </div>
     </section>
 
-    <!-- Seite 3 Inventar -->
     <section id="inventory" class="page hidden">
       <div class="center">
         <button class="btn yellow" onclick="openItemPopup()">Sache hinzufügen</button>
@@ -74,7 +71,6 @@
       </table>
     </section>
 
-    <!-- Seite 4 -->
     <section id="about" class="page hidden center big-text">
       GyRa Technik
     </section>
@@ -82,6 +78,7 @@
   </main>
 </div>
 
+<!-- Neues Item -->
 <div id="itemPopup" class="popup hidden">
   <div class="popup-box">
     <input id="iName" placeholder="Name">
@@ -93,6 +90,21 @@
     </select>
     <button class="btn green" onclick="saveItem()">Speichern</button>
     <button class="btn red" onclick="closePopup()">Abbrechen</button>
+  </div>
+</div>
+
+<!-- Bearbeiten -->
+<div id="editItemPopup" class="popup hidden">
+  <div class="popup-box">
+    <input id="editName">
+    <input id="editAmount" type="number">
+    <select id="editStatus">
+      <option>OK</option>
+      <option>Defekt</option>
+      <option>Leer</option>
+    </select>
+    <button class="btn green" onclick="updateItem()">Speichern</button>
+    <button class="btn red" onclick="closeEditPopup()">Abbrechen</button>
   </div>
 </div>
 
