@@ -2,61 +2,98 @@
 <html lang="de">
 <head>
   <meta charset="UTF-8">
+  <title>GyRa Technik</title>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Event Übersicht</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-<div id="loginPage" class="center">
-  <h2>Login</h2>
-  <input type="email" id="email" placeholder="E-Mail">
-  <input type="password" id="password" placeholder="Passwort">
-  <button onclick="login()">Anmelden</button>
+<div id="loginPage" class="login-container">
+  <div class="login-box">
+    <h1>GyRa Technik</h1>
+    <input id="email" type="email" placeholder="E-Mail">
+    <input id="password" type="password" placeholder="Passwort">
+    <button class="btn blue" onclick="login()">Login</button>
+  </div>
 </div>
 
 <div id="app" class="hidden">
 
-  <header class="topnav">
-    <div class="title">Event Übersicht</div>
+  <header class="navbar">
+    <div class="logo">GyRa Technik</div>
     <nav>
-      <button id="navHome">Startseite</button>
-      <button id="navNew">Neues Event</button>
-      <button id="navInv">Inventar</button>
-      <button id="navLogout">Logout</button>
+      <button class="btn blue" onclick="showPage('events')">Events</button>
+      <button class="btn blue" onclick="showPage('create')">Event erstellen</button>
+      <button class="btn blue" onclick="showPage('inventory')">Inventar</button>
+      <button class="btn blue" onclick="showPage('about')">Über uns</button>
+      <button class="btn red" onclick="logout()">Logout</button>
     </nav>
   </header>
 
   <main>
-    <section id="homePage">
-      <div id="eventList"></div>
+
+    <!-- Seite 1 Events -->
+    <section id="events" class="page">
+      <div id="eventList" class="event-grid"></div>
     </section>
 
-    <section id="inventoryPage" class="hidden">
-      <h2>Inventar</h2>
-      <button onclick="openItemPopup()">Gerät hinzufügen</button>
-      <ul id="inventoryList"></ul>
+    <!-- Seite 2 Event erstellen -->
+    <section id="create" class="page hidden center">
+      <div class="form-box">
+        <input id="eName" placeholder="Event Name">
+        <input id="eLead" placeholder="Leitung">
+        <input id="eDate" type="date">
+        <input id="eRehearsal" type="time" placeholder="Proben Uhrzeit">
+        <input id="eTime" type="time" placeholder="Event Uhrzeit">
+        <select id="ePlace">
+          <option>Atrium</option>
+          <option>Forum</option>
+        </select>
+        <label>Text Feld für alle Infos</label>
+        <textarea id="eText" minlength="5" maxlength="900"></textarea>
+        <button class="btn green" onclick="saveEvent()">Speichern</button>
+      </div>
     </section>
+
+    <!-- Seite 3 Inventar -->
+    <section id="inventory" class="page hidden">
+      <div class="center">
+        <button class="btn yellow" onclick="openItemPopup()">Sache hinzufügen</button>
+      </div>
+
+      <table>
+        <thead>
+          <tr>
+            <th>Name</th>
+            <th>Menge</th>
+            <th>Status</th>
+            <th>Aktion</th>
+          </tr>
+        </thead>
+        <tbody id="inventoryList"></tbody>
+      </table>
+    </section>
+
+    <!-- Seite 4 -->
+    <section id="about" class="page hidden center big-text">
+      GyRa Technik
+    </section>
+
   </main>
+</div>
 
-  <div id="eventPopup" class="popup hidden">
-    <h2>Neues Event</h2>
-    <input type="date" id="eventDate">
-    <input type="text" id="eventName" placeholder="Event Name">
-    <input type="text" id="eventLead" placeholder="Leitung">
-    <textarea id="eventText" placeholder="Beschreibung"></textarea>
-    <button onclick="saveEvent()">Speichern</button>
-    <button onclick="closePopups()">Abbrechen</button>
+<div id="itemPopup" class="popup hidden">
+  <div class="popup-box">
+    <input id="iName" placeholder="Name">
+    <input id="iAmount" type="number" placeholder="Menge">
+    <select id="iStatus">
+      <option>OK</option>
+      <option>Defekt</option>
+      <option>Leer</option>
+    </select>
+    <button class="btn green" onclick="saveItem()">Speichern</button>
+    <button class="btn red" onclick="closePopup()">Abbrechen</button>
   </div>
-
-  <div id="itemPopup" class="popup hidden">
-    <h2>Gerät hinzufügen</h2>
-    <input type="text" id="itemName" placeholder="Name">
-    <input type="number" id="itemAmount" placeholder="Menge">
-    <button onclick="saveItem()">Speichern</button>
-    <button onclick="closePopups()">Abbrechen</button>
-  </div>
-
 </div>
 
 <script type="module" src="app.js"></script>
